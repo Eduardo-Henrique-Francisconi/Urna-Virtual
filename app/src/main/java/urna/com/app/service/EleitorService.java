@@ -49,7 +49,7 @@ public class EleitorService {
         if (eleitorExistente.isPresent()) {
             Eleitor eleitor = eleitorExistente.get();
             if (Eleitor.Status.INATIVO.equals(eleitor.getStatus())) {
-                eleitor.setNomeCompleto(eleitorAtualizado.getNomeCompleto());
+                eleitor.setNome(eleitorAtualizado.getNome());
                 eleitor.setCpf(eleitorAtualizado.getCpf());
                 eleitor.setProfissao(eleitorAtualizado.getProfissao());
                 eleitor.setTelefoneCelular(eleitorAtualizado.getTelefoneCelular());
@@ -62,7 +62,7 @@ public class EleitorService {
                 } else {
                     eleitorAtualizado.setStatus(Eleitor.Status.APTO);
                 }
-                eleitor.setNomeCompleto(eleitorAtualizado.getNomeCompleto());
+                eleitor.setNome(eleitorAtualizado.getNome());
                 eleitor.setCpf(eleitorAtualizado.getCpf());
                 eleitor.setProfissao(eleitorAtualizado.getProfissao());
                 eleitor.setTelefoneCelular(eleitorAtualizado.getTelefoneCelular());

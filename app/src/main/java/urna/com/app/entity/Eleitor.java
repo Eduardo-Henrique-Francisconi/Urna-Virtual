@@ -32,7 +32,7 @@ public class Eleitor {
     private Long id;
 
     @NotBlank(message = "Nome completo é obrigatório")
-    private String nomeCompleto;
+    private String Nome;
 
     //@CPF(message = "CPF invalido")  
     private String cpf;
