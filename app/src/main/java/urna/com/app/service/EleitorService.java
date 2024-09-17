@@ -87,9 +87,14 @@ public class EleitorService {
             } else if (Eleitor.Status.APTO.equals(eleitor.getStatus())) {
                 eleitor.setStatus(Eleitor.Status.VOTOU);
                 eleitorRepository.save(eleitor);
+            } else if (Eleitor.Status.VOTOU.equals(eleitor.getStatus())) {
+                throw new RuntimeException("Usuário já votou");
+            } else if (Eleitor.Status.BLOQUEADO.equals(eleitor.getStatus())) {
+                throw new RuntimeException("Usuário bloqueado");
             } else {
-                throw new RuntimeException("Usuário não está apto a votar.");
+                throw new RuntimeException("Usuário inativo");
             }
+
         }
     }
 }

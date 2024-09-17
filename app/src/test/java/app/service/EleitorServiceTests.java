@@ -74,6 +74,7 @@ public class EleitorServiceTests {
 		verify(eleitorRepository, times(1)).save(eleitor);
 	}
 
+	//não esta funcionando
 	@Test
 	public void testListarTodos() {
 		// Mock para a lista de eleitores
@@ -97,5 +98,211 @@ public class EleitorServiceTests {
 		assertTrue(resultado.contains(eleitor3));
 	}
 
+	@Test
+	public void testBuscarPorId() {
+		// Mock para o eleitor a ser retornado
+		Eleitor eleitor = new Eleitor();
+		eleitor.setId(1L);
+
+		// Define o comportamento do mock para o método findById
+		when(eleitorRepository.findById(1L)).thenReturn(Optional.of(eleitor));
+
+		// Chama o método a ser testado
+		Optional<Eleitor> resultado = eleitorService.buscarPorId(1L);
+
+		// Verifica se o resultado é o esperado
+		assertTrue(resultado.isPresent());
+		assertEquals(eleitor, resultado.get());
+	}
+
+	@Test
+	public void testDeletarEleitor() {
+		// Mock para o eleitor a ser deletado
+		Eleitor eleitor = new Eleitor();
+		eleitor.setId(1L);
+		eleitor.setStatus(Eleitor.Status.APTO);
+
+		// Define o comportamento do mock para o método findById
+		when(eleitorRepository.findById(1L)).thenReturn(Optional.of(eleitor));
+
+		// Chama o método a ser testado
+		eleitorService.deletarEleitor(1L);
+
+		// Verifica se o método foi chamado
+		verify(eleitorRepository, times(1)).save(eleitor);
+	}
+
+	@Test
+	public void testDeletarEleitorQueJaVotou() {
+		// Mock para o eleitor a ser deletado
+		Eleitor eleitor = new Eleitor();
+		eleitor.setId(1L);
+		eleitor.setStatus(Eleitor.Status.VOTOU);
+
+		// Define o comportamento do mock para o método findById
+		when(eleitorRepository.findById(1L)).thenReturn(Optional.of(eleitor));
+
+		// Chama o método a ser testado
+		Exception exception = assertThrows(RuntimeException.class, () -> {
+			eleitorService.deletarEleitor(1L);
+		});
+
+		// Verifica se a exceção foi lançada
+		assertTrue(exception.getMessage().contains("Usuário já votou"));
+	}
 	
+	@Test	
+	public void testAtualizarEleitorInativo() {
+		// Mock para o eleitor a ser atualizado
+		Eleitor eleitor = new Eleitor();
+		eleitor.setId(1L);
+		eleitor.setStatus(Eleitor.Status.INATIVO);
+		Eleitor eleitorAtualizado = new Eleitor();
+		eleitorAtualizado.setNome("João da Silva");
+		eleitorAtualizado.setCpf("12345678901");
+		eleitorAtualizado.setProfissao("Engenheiro");
+		eleitorAtualizado.setTelefoneCelular("(11) 99999-9999");
+		eleitorAtualizado.setEmail("joaoteste@gmail.com");
+
+		// Define o comportamento do mock para o método findById
+		when(eleitorRepository.findById(1L)).thenReturn(Optional.of(eleitor));
+		// Define o comportamento do mock para o método save
+		when(eleitorRepository.save(eleitor)).thenReturn(eleitor);
+
+		// Chama o método a ser testado
+		Eleitor resultado = eleitorService.atualizarEleitor(1L, eleitorAtualizado);
+
+		// Verifica se o resultado é o esperado
+		assertEquals(eleitorAtualizado.getNome(), resultado.getNome());
+		assertEquals(eleitorAtualizado.getCpf(), resultado.getCpf());
+		assertEquals(eleitorAtualizado.getProfissao(), resultado.getProfissao());
+		assertEquals(eleitorAtualizado.getTelefoneCelular(), resultado.getTelefoneCelular());
+		assertEquals(eleitorAtualizado.getEmail(), resultado.getEmail());
+		assertEquals(Eleitor.Status.INATIVO, resultado.getStatus());
+		verify(eleitorRepository, times(1)).save(eleitor);
+	}
+
+	//não esta funcionando
+	@Test
+	public void testAtualizarEleitorApto() {
+		// Mock para o eleitor a ser atualizado
+		Eleitor eleitor = new Eleitor();
+		eleitor.setId(1L);
+		eleitor.setStatus(Eleitor.Status.APTO);
+		Eleitor eleitorAtualizado = new Eleitor();
+		eleitorAtualizado.setNome("João da Silva");
+		eleitorAtualizado.setCpf("12345678901");
+		eleitorAtualizado.setProfissao("Engenheiro");
+		eleitorAtualizado.setTelefoneCelular("(11) 99999-9999");
+		eleitorAtualizado.setEmail("joaoteste@gmail.com");
+
+		// Define o comportamento do mock para o método findById
+		when(eleitorRepository.findById(1L)).thenReturn(Optional.of(eleitor));
+
+		// Chama o método a ser testado
+		Eleitor resultado = eleitorService.atualizarEleitor(1L, eleitorAtualizado);
+
+		// Verifica se o resultado é o esperado
+		assertEquals(eleitorAtualizado.getNome(), resultado.getNome());
+		assertEquals(eleitorAtualizado.getCpf(), resultado.getCpf());
+		assertEquals(eleitorAtualizado.getProfissao(), resultado.getProfissao());
+		assertEquals(eleitorAtualizado.getTelefoneCelular(), resultado.getTelefoneCelular());
+		assertEquals(eleitorAtualizado.getEmail(), resultado.getEmail());
+		assertEquals(Eleitor.Status.APTO, resultado.getStatus());
+		verify(eleitorRepository, times(1)).save(eleitor);
+	}
+
+	@Test
+	public void testVotarPendente() {
+		// Mock para o eleitor a ser votado
+		Eleitor eleitor = new Eleitor();
+		eleitor.setId(1L);
+		eleitor.setStatus(Eleitor.Status.PENDENTE);
+
+		// Define o comportamento do mock para o método findById
+		when(eleitorRepository.findById(1L)).thenReturn(Optional.of(eleitor));
+
+		// Chama o método a ser testado
+		Exception exception = assertThrows(RuntimeException.class, () -> {
+			eleitorService.votar(1L);
+		});
+
+		// Verifica se a exceção foi lançada
+		assertTrue(exception.getMessage().contains("Usuário com cadastro pendente"));
+	}
+
+	@Test
+	public void testVotarApto() {
+		// Mock para o eleitor a ser votado
+		Eleitor eleitor = new Eleitor();
+		eleitor.setId(1L);
+		eleitor.setStatus(Eleitor.Status.APTO);
+
+		// Define o comportamento do mock para o método findById
+		when(eleitorRepository.findById(1L)).thenReturn(Optional.of(eleitor));
+
+		// Chama o método a ser testado
+		eleitorService.votar(1L);
+
+		// Verifica se o método foi chamado
+		verify(eleitorRepository, times(1)).save(eleitor);
+	}
+
+	@Test
+	public void testVotarBloqueado() {
+		// Mock para o eleitor a ser votado
+		Eleitor eleitor = new Eleitor();
+		eleitor.setId(1L);
+		eleitor.setStatus(Eleitor.Status.BLOQUEADO);
+
+		// Define o comportamento do mock para o método findById
+		when(eleitorRepository.findById(1L)).thenReturn(Optional.of(eleitor));
+
+		// Chama o método a ser testado
+		Exception exception = assertThrows(RuntimeException.class, () -> {
+			eleitorService.votar(1L);
+		});
+
+		// Verifica se a exceção foi lançada
+		assertTrue(exception.getMessage().contains("Usuário bloqueado"));
+	}
+	
+	@Test
+	public void testVotarJaVotou() {
+		// Mock para o eleitor a ser votado
+		Eleitor eleitor = new Eleitor();
+		eleitor.setId(1L);
+		eleitor.setStatus(Eleitor.Status.VOTOU);
+
+		// Define o comportamento do mock para o método findById
+		when(eleitorRepository.findById(1L)).thenReturn(Optional.of(eleitor));
+
+		// Chama o método a ser testado
+		Exception exception = assertThrows(RuntimeException.class, () -> {
+			eleitorService.votar(1L);
+		});
+
+		// Verifica se a exceção foi lançada
+		assertTrue(exception.getMessage().contains("Usuário já votou"));
+	}
+
+	@Test
+	public void testVotarInativo() {
+		// Mock para o eleitor a ser votado
+		Eleitor eleitor = new Eleitor();
+		eleitor.setId(1L);
+		eleitor.setStatus(Eleitor.Status.BLOQUEADO);
+
+		// Define o comportamento do mock para o método findById
+		when(eleitorRepository.findById(1L)).thenReturn(Optional.of(eleitor));
+
+		// Chama o método a ser testado
+		Exception exception = assertThrows(RuntimeException.class, () -> {
+			eleitorService.votar(1L);
+		});
+
+		// Verifica se a exceção foi lançada
+		assertTrue(exception.getMessage().contains("Usuário bloqueado"));
+
+	}
 }
