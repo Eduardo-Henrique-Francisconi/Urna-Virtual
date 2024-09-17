@@ -36,13 +36,13 @@ public class Candidato {
     private Long id;
 
     @NotBlank(message = "Nome completo é obrigatório")
-    private String nomeCompleto;
+    private String Nome;
 
     private String cpf;
 
     @NotBlank(message = "Número do candidato é obrigatório")
     @Column(unique = true, nullable = false)
-    private String numeroCandidato;
+    private String Numero;
 
     @NotNull(message = "Função é obrigatória")
     @Positive(message = "Função deve ser 1 (prefeito) ou 2 (vereador)")
@@ -54,10 +54,10 @@ public class Candidato {
     @Transient
     private Long votosApurados;
 
-    public Candidato(String nomeCompleto, String cpf, String numeroCandidato, Integer funcao) {
-        this.nomeCompleto = nomeCompleto;
+    public Candidato(String nome, String cpf, String numero, Integer funcao) {
+        this.Nome = nome;
         this.cpf = cpf;
-        this.numeroCandidato = numeroCandidato;
+        this.Numero = numero;
         this.funcao = funcao;
         this.status = StatusCandidato.ATIVO; // O status padrão é definido pelo serviço
     }
