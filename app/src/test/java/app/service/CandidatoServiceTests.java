@@ -61,6 +61,66 @@ public class CandidatoServiceTests {
 		assertEquals(candidatoSalvo.getFuncao(), candidato.getFuncao());
 	}
 
+	@Test
+	public void testBuscarPorId () {
+		// Mock para o candidato a ser buscado
+		Candidato candidato = new Candidato();
+		candidato.setNome("Candidato 1");
+		candidato.setNumero("10");
+		candidato.setFuncao(1);
+
+		// Mock para o candidatoRepository
+		when(candidatoRepository.findById(1L)).thenReturn(Optional.of(candidato));
+
+		// Teste do método buscarPorId
+		Candidato candidatoBuscado = candidatoService.buscarPorId(1L);
+
+		// Verificação do método buscarPorId
+		assertEquals(candidatoBuscado.getNome(), candidato.getNome());
+		assertEquals(candidatoBuscado.getNumero(), candidato.getNumero());
+		assertEquals(candidatoBuscado.getFuncao(), candidato.getFuncao());
+	}
+
+	@Test
+	public void testDeletarCandidato () {
+		// Mock para o candidato a ser deletado
+		Candidato candidato = new Candidato();
+		candidato.setNome("Candidato 1");
+		candidato.setNumero("10");
+		candidato.setFuncao(1);
+
+		// Mock para o candidatoRepository
+		when(candidatoRepository.findById(1L)).thenReturn(Optional.of(candidato));
+
+		// Teste do método deletarCandidato
+		candidatoService.deletarCandidato(1L);
+
+		// Verificação do método deletarCandidato
+		verify(candidatoRepository, times(1)).save(candidato);
+	}
+
+	@Test
+	public void testDeletarCandidatoInexistente () {
+		// Mock para o candidato a ser deletado
+		Candidato candidato = new Candidato();
+		candidato.setNome("Candidato 1");
+		candidato.setNumero("10");
+		candidato.setFuncao(1);
+		candidato.setStatus(Candidato.StatusCandidato.ATIVO);
+
+		// Mock para o candidatoRepository
+		when(candidatoRepository.findById(1L)).thenReturn(Optional.empty());
+
+		// Teste do método deletarCandidato
+		candidatoService.deletarCandidato(1L);
+
+		// Verificação do método deletarCandidato
+		verify(candidatoRepository, times(0)).save(candidato);
+
+		
+		
+	}
+
 
 
 }

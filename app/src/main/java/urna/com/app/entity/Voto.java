@@ -45,4 +45,9 @@ public class Voto {
         this.dataHoraVotacao = LocalDateTime.now();
         this.hash = UUID.randomUUID().toString();
     }
+
+    public void setEleitor(Eleitor eleitor) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setEleitor'");
+    }
 }

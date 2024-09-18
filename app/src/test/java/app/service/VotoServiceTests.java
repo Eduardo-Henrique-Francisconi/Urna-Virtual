@@ -16,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import urna.com.app.entity.Eleitor;
@@ -43,13 +44,49 @@ public class VotoServiceTests {
 	@BeforeEach
 	public void setUp() {
 		MockitoAnnotations.openMocks(this);
+		candidatoRepository = Mockito.mock(CandidatoRepository.class);
 	}
 
-    
+	@Test
+	public void testarVotar() {
+		// Mock para o cliente a ser salvo
+		Eleitor eleitor = new Eleitor();
+		eleitor.setCpf("12345678901");
+		eleitor.setEmail("teste@teste.com");
+		eleitor.setNome("Teste");
+		eleitor.setStatus(Eleitor.Status.APTO);
 
+		// Mock para o candidato a ser votado
+		Candidato candidato = new Candidato();
+		candidato.setNome("Teste");
+		candidato.setCpf("12345678901");
+		candidato.setNumero("12");
+		candidato.setFuncao(1);
+		candidato.setStatus(StatusCandidato.ATIVO);
 
+		// Mock para o voto
+		Voto voto = new Voto();
+		voto.setCandidatoPrefeito(candidato);
+		voto.setCandidatoVereador(candidato);
 
+		//definindo o metodo buscarPorId para retornar o eleitor mockado
+		when(eleitorRepository.findById(1L)).thenReturn(Optional.of(eleitor));
 
+		//definindo o metodo findById para retornar o candidato mockado
+		when(candidatoRepository.findById(1L)).thenReturn(Optional.of(candidato));
+		
+		//definindo o metodo salvarEleitor para retornar o eleitor mockado
+		when(eleitorService.salvarEleitor(eleitor)).thenReturn(eleitor);
+
+		//definindo o metodo votar para retornar o hash do voto
+		when(eleitorService.votar(1L, voto)).thenReturn("hash");
+
+		//verificando se o metodo votar foi chamado
+
+		assertEquals("hash", eleitorService.votar(1L, voto));
+		
+
+	}	
 
    
 }

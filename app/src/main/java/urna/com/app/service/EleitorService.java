@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import urna.com.app.entity.Eleitor;
+import urna.com.app.entity.Voto;
 import urna.com.app.repository.EleitorRepository;
 
 @Service
@@ -16,12 +17,17 @@ public class EleitorService {
     private EleitorRepository eleitorRepository;
 
     public Eleitor salvarEleitor(Eleitor eleitor) {
-        if (eleitor.getCpf() == null || eleitor.getEmail() == null) {
-            eleitor.setStatus(Eleitor.Status.PENDENTE);
-        } else {
-            eleitor.setStatus(Eleitor.Status.APTO);
+        try {
+            if (eleitor.getCpf() == null || eleitor.getEmail() == null) {
+                eleitor.setStatus(Eleitor.Status.PENDENTE);
+            } else {
+                eleitor.setStatus(Eleitor.Status.APTO);
+            }
+            return eleitorRepository.save(eleitor);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao salvar eleitor");
         }
-        return eleitorRepository.save(eleitor);
+
     }
 
     public List<Eleitor> listarTodos() {
@@ -96,5 +102,10 @@ public class EleitorService {
             }
 
         }
+    }
+
+    public String votar(Long long1, Voto voto) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'votar'");
     }
 }
