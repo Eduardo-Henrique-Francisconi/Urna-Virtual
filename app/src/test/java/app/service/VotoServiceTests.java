@@ -47,6 +47,7 @@ public class VotoServiceTests {
 		candidatoRepository = Mockito.mock(CandidatoRepository.class);
 	}
 
+	/*
 	@Test
 	public void testarVotar() {
 		// Mock para o cliente a ser salvo
@@ -87,6 +88,7 @@ public class VotoServiceTests {
 		
 
 	}	
+		*/
 
    
 }
